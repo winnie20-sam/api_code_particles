@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CustomerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,20 +16,21 @@ use App\Http\Controllers\AuthController;
 |
 */
 
+// Public Route
 Route::middleware('auth')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+// Auth Routes
 Route::group([
-
     'middleware' => 'api',
     'prefix' => 'auth'
-
-], function ($router) {
-
-    Route::post('login', [AuthController::class , 'login']);
+], function () {
+    Route::post('login', [AuthController::class, 'login'])->name('login');
     Route::post('logout', [AuthController::class, 'logout']);
-    Route::post('refresh',[AuthController::class, 'refresh']);
-    Route::post('me', [AuthController::class. 'me']);
-
+    Route::post('refresh', [AuthController::class, 'refresh']);
+    Route::post('me', [AuthController::class, 'me']);
 });
+
+// Protected Customer Route
+Route::middleware('auth:api')->get('customers', [CustomerController::class, 'index']);
