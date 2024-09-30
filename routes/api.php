@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CustomerController;
 
 /*
@@ -34,3 +35,6 @@ Route::group([
 
 // Protected Customer Route
 Route::middleware('auth:api')->get('customers', [CustomerController::class, 'index']);
+
+// Public endpoint to view products
+Route::get('/products', [ProductController::class, 'index']);
