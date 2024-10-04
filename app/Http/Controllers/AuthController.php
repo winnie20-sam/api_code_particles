@@ -20,6 +20,32 @@ class AuthController extends Controller
             $this->middleware('auth:api', ['except' => ['login']]);
         }
 
+        public function register(Request $request)
+    {
+        // Validate the request
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:6|confirmed',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        // Create the user
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+
+        // Optionally, return a token after registration
+        $token = auth()->login($user);
+
+        return $this->respondWithToken($token);
+    }
+
         /**
          * Get a JWT via given credentials.
          *
